@@ -1,7 +1,5 @@
 #include <iostream>
 #include <string>
-#include <time.h>
-#include <stdlib.h>
 
 #include "maze.h"
 
@@ -23,7 +21,7 @@ int main() {
 
     do
     {
-        std::cout << "I - Criar e Resolver Labirinto\tE - Sair" << std::endl;
+        std::cout << "I - Criar e resolver labirinto automaticamente\tE - Sair" << std::endl;
         std::cin >> caracter;
         caracter = toupper(caracter);
 
@@ -32,6 +30,7 @@ int main() {
             case 'I':
                 system("cls");
 
+                std::cout << "Informe o numero de linhas e colunas respectivamente:" << std::endl;
                 std::cin >> line;
                 std::cin >> column;
 
@@ -41,10 +40,10 @@ int main() {
                 break;
 
             default:
-                std::cout << "Opção Inválida" << std::endl;
+                std::cout << "Opçao Invalida! Tente novamente" << std::endl;
                 break;
         }
-    } while(caracter != 'S');
+    } while(caracter != 'E');
 
   //maze.~Maze();
 

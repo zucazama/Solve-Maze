@@ -52,72 +52,62 @@ void Maze::path()
 {
     int door = rand()%rows;
     current = &grid[door][0];
+
     stack[push] = &(*current);
 
   do
   {
     current->visited = true;
+
     next = this->checkNeighbors(*current);
+
 
     if(next != NULL)
     {
-      ++push;
-      //++retro;
-      pop = push;
 
-      //current->caracter = '#';
+      current->caracter = '*';
+      next->caracter = '+';
 
-      next->visited = true;
+      //next->visited = true;
+
+      //Adiciona a celula autal a pilha de visitados
+        stack[push] = current;
 
       //Torna a proxima celula a atual
       current = next;
 
-      //Adiciona a celula autal a pilha de visitados
-      stack[push] = current;
+      ++push;
+
+      //++retro;
+      //pop = push;
 
 
     }
-    else if(push > 0 && contNeighBors > 0)
-    {
 
-      //std::cout << "é verdadeira" << std::endl;
-
-      current->caracter = '#';
-      current->wall = true;
-      current->fixed = true;
-      current->visited = true;
-
-      //Apaga a celula atual visitada
-      stack[push] = NULL;
-
-      --push;
-      --pop;
-
-
-      //Retorna uma celula da pilha
-      current = stack[pop];
-
-    }
-    //Caso a célula não tiver nenhum caminho posterior e não for uma parede
+    //Caso a célula nao tiver nenhum caminho posterior e não for uma parede
     //Retorna a célula anterior da pilha
-    else if(push > 0 && !current->wall)
+    else
     {
-      current->caracter = '.';
-      current->visited = true;
-      current->fixed = true;
-
-      //Apaga a celula atual visitada
-      stack[push] = NULL;
+          if(!current->wall) { current->caracter = '.'; }
+          //current->visited = true;
+          current->fixed = true;
 
 
-      --push;
-      --pop;
+        --push;
+        //Torna a ultima cécula visitada na atual
+        current = stack[push];
 
-      //Torna a cécula atual a penúltima da pilha
-      current = stack[pop];
+        //Apaga a ultima celula visitada
+        //stack[push] = NULL;
+
+
     }
+    //std::cout << push << std::endl;
+    //std::cout << push << '\t' << contNeighBors << '\t' << stack[push]->fixed << std::endl;
 
-  } while(push > 0);
+    //this->show();
+
+  } while(!stack[0]->fixed);
 
   this->doors(door);
 
@@ -126,21 +116,24 @@ void Maze::path()
 
 void Maze::doors(const int port)
 {
-    int psdRand;
+    int psdRand = rand()%9 ;
     grid[port][0].caracter = 'E';
-
+    std::cout << psdRand << std::endl;
     //Decide se existe saída
-    if(rand()%2) { return; }
+    if(!psdRand) { return; }
 
     do
     {
 
         psdRand = rand()%rows;
+
         if(!grid[psdRand][cols - 1].wall)
         {
             grid[psdRand][cols - 1].caracter = 'S';
             return;
+
         }
+
     } while(true);
 }
 
@@ -148,12 +141,11 @@ Cell* Maze::checkNeighbors(Cell& actualCell)
 {
   contNeighBors = 0;
   int indx;
-  int retro = push;
+  int retro = push > 0 ? (push - 1) : 0;
   int cellPositionX;
   int cellPositionY;
 
-
-  if(push > 0) { --retro; }
+  //if(push > 0) { --retro; }
 
   for(int k = -1; k < 2; ++k)
   {
@@ -174,27 +166,42 @@ Cell* Maze::checkNeighbors(Cell& actualCell)
           ++contNeighBors;
 
         }
-        else if(&grid[cellPositionX][cellPositionY] != &(*stack[retro]) && !grid[cellPositionX][cellPositionY].fixed)
+        //*
+        else if((push - 1) > 0)
         {
-            ++contNeighBors;
-            return NULL;
+            if(&grid[cellPositionX][cellPositionY] != &(*stack[push - 1]) && !grid[cellPositionX][cellPositionY].fixed)
+            {
+                //std::cout << cellPositionX << '\t' << cellPositionY << std::endl;
+                //std::cout << "por algum motivo ele entrou aqu" << '\t' << push << std::endl;
+                //std::cout<< &(*stack[push]) << std::endl;
+                //std::cout << &grid[cellPositionX][cellPositionY] << '\t' << &(*stack[push - 1]) << std::endl;
+
+                actualCell.caracter = '#';
+                actualCell.wall = true;
+                actualCell.fixed = true;
+
+                return NULL;
+
+
+            }
         }
+        //*/
       }
     }
   }
 
   //std::cout << contNeighBors << " :contNeighBors" << std::endl;
 
-  if(contNeighBors > 0)
-  {
-    //std::cout << contNeighBors << std::endl;
-    //Retorna o proximo visinho caso houver
-    return neighbors[rand()%contNeighBors];
-  }
-  else
-  {
-    return NULL;
-  }
+    if(contNeighBors > 0)
+    {
+        //std::cout << contNeighBors << std::endl;
+        //Retorna o proximo visinho caso houver
+        return neighbors[rand()%contNeighBors];
+    }
+    else
+    {
+        return NULL;
+    }
 
 }
 
@@ -249,65 +256,69 @@ void Maze::waySolve()
         for(int j = 0; j < cols; ++j)
         {
             grid[i][j].visited = false;
+            grid[i][j].fixed = false;
         }
     }
 
     //std::cout << current->caracter <<  '\t' << stack[push]->caracter << std::endl;
+    //stack[0] = &grid[0][0];
+
+    current = stack[0];
+    push = 0;
+    //std::cout << current->row << '\t' << current->col << std::endl;
   do
   {
-    //std::cout << stack[push]->row << '\t' << stack[push]->col << std::endl;
     current->visited = true;
     next = this->checkSolveNeighbors(*current);
 
 
     if(next != NULL)
     {
-      ++push;
-      //++retro;
-      pop = push;
 
       //Indica o trajeto correto
-      if(push > 1) { current->caracter = '>'; }
+        //std::cout << current->caracter << std::endl;
+        if(push > 0) { current->caracter = '>'; }
+        if(next->caracter == 'S') { std::cout << "Saida Encontrada!" << std::endl ; return; }
 
-      next->visited = true;
-
-      //Torna a proxima celula a atual
-      current = next;
+      //next->visited = true;
 
       //Adiciona a celula autal a pilha de visitados
       stack[push] = current;
 
+      //Torna a proxima celula a atual
+      current = next;
+
+      ++push;
 
     }
 
-    //Caso a célula não tiver nenhum caminho posterior e não for uma parede
+    //Caso a célula nao tiver nenhum caminho posterior e nao for uma parede
     //Retorna a célula anterior da pilha
-    else if(push > 0)
+    else
     {
 
       //Sinaliza o caminho sem saida
       current->caracter = '.';
+      current->fixed = true;
 
-      current->visited = true;
+      //current->visited = true;
       //current->fixed = true;
 
       //Apaga a celula atual visitada
-      stack[push] = NULL;
+      //stack[push] = NULL;
 
 
       --push;
-      --pop;
 
       //Torna a cécula atual a penúltima da pilha
-      current = stack[pop];
-      //return;
+      current = stack[push];
+
     }
 
-    if(current->caracter == 'S') { std::cout << "Saida Encontrada!" << std::endl ; return; }
 
-  } while(push > 0);
+  } while(!stack[0]->fixed);
 
-    if(push == 0) { std::cout << "Saida não Encontrada!" << std::endl; }
+    if(push < 0) { std::cout << "Saida nao Encontrada!" << std::endl; }
 
     return;
 
@@ -337,7 +348,7 @@ Cell* Maze::checkSolveNeighbors(Cell& actualCell)
       if(indx >= 0 && (k != y && k != -y))
       {
 
-        if(!grid[cellPositionX][cellPositionY].visited && !grid[cellPositionX][cellPositionY].wall)
+        if(!grid[cellPositionX][cellPositionY].visited && !grid[cellPositionX][cellPositionY].wall )
         {
 
           neighbors[contNeighBors] = &grid[cellPositionX][cellPositionY];

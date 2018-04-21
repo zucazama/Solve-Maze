@@ -5,7 +5,7 @@ struct Cell
 {
   int row;
   int col;
-  char caracter = '#';
+  char caracter = '$';
   bool visited = false;
   bool wall = false;
   bool fixed = false;
@@ -46,6 +46,8 @@ class Maze
         int contNeighBors = 0;
         int push = 0;
         int pop = 0;
+
+        bool isWall = false;
 
         Cell *current;
         Cell *next;
