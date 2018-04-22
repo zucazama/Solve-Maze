@@ -7,16 +7,16 @@ void start(const int line, const int column)
 {
     Maze maze(line, column);
     maze.path();
-    maze.show();
+    //maze.show();
     maze.waySolve();
     maze.show();
 }
 
 int main() {
 
-  int line;
-  int column;
-  char caracter;
+    int line;
+    int column;
+    char caracter;
 
 
     do
@@ -45,8 +45,8 @@ int main() {
         }
     } while(caracter != 'E');
 
-  //maze.~Maze();
+    //maze.~Maze();
 
 
-  return 0;
+    return 0;
 }

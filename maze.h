@@ -5,9 +5,9 @@ struct Cell
 {
   int row;
   int col;
-  char caracter = '$';
+  char caracter = 177;
   bool visited = false;
-  bool wall = false;
+  bool wall = true;
   bool fixed = false;
 
   public:
