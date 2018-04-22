@@ -3,64 +3,63 @@
 
 struct Cell
 {
-  int row;
-  int col;
-  char caracter = 177;
-  bool visited = false;
-  bool wall = true;
-  bool fixed = false;
+	int row;
+	int col;
+	char caracter = 177;
+	bool visited = false;
+	bool wall = true;
+	bool fixed = false;
 
-  public:
-    void setCell(const int i, const int j)
-    {
-      this->row = i;
-      this->col = j;
-    }
+	public:
+	void setCell(const int i, const int j)
+	{
+		this->row = i;
+		this->col = j;
+	}
 };
 
 
 class Maze
 {
-    public:
-        //Construtor da classe
-        Maze(const int, const int);
-        //Destrutor
-        ~Maze();
+	public:
+		//Construtor da classe
+		Maze(const int, const int);
+		//Destrutor
+		~Maze();
 
-        void path();
-        void waySolve();
-        void show();
-        void doors(const int);
+		void path();
+		void waySolve();
+		void show();
+		void doors(const int);
 
-        int index(const int, const int);
+		int index(const int, const int);
 
-        Cell* checkNeighbors(Cell&);
-        Cell* checkSolveNeighbors(Cell&);
+		Cell* checkNeighbors(Cell&);
+		Cell* checkSolveNeighbors(Cell&);
 
 
-    protected:
-        int rows;
-        int cols;
+	protected:
+		int rows;
+		int cols;
 
-        int indx;
-        int contNeighBors = 0;
-        int push = 0;
-        int pop = 0;
+		int indx;
+		int contNeighBors = 0;
+		int push = 0;
 
-        bool isWall = false;
+		char *stringMaze;
 
-        Cell *current;
-        Cell *next;
-        Cell **stack;
-        Cell **neighbors;
-        Cell **grid;
-
+		Cell *current;
+		Cell *next;
+		Cell **stack;
+		Cell **neighbors;
+		Cell **grid;
 };
 
 /*
 class SolverMaze : protected Maze
 {
     public:
+
         SolverMaze()
         {
             std::cout << " oi";
@@ -70,9 +69,6 @@ class SolverMaze : protected Maze
         void a();
 
     protected:
-
-
-
 
 };
 */
