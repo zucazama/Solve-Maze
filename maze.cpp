@@ -2,35 +2,49 @@
 #include <ctime>
 #include <cstdlib>
 
+#include <windows.h>
+
 #include "maze.h"
+
+
+//Faz a atualização da tela sem que ocorra cintilação
+void clearScreen()
+{
+	HANDLE hOut;
+	COORD Position;
+	hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	Position.X = 0;
+	Position.Y = 0;
+	SetConsoleCursorPosition(hOut, Position);
+}
 
 //Construtor da classe
 Maze::Maze(const int l, const int c)
 {
-   //int addRows = l % 2 == 0 ? 2 : 1;
-   //int addCols = c % 2 == 0? 2 : 1;
+	//int addRows = l % 2 == 0 ? 2 : 1;
+	//int addCols = c % 2 == 0? 2 : 1;
 
-   rows = (l * 2) + 1;
-   cols = (c * 2) + 1;
+	rows = (l * 2) + 1;
+	cols = (c * 2) + 1;
 
-   grid = new Cell* [rows];
-   neighbors = new Cell* [4];
-   stack = new Cell* [rows * cols];
-   stringMaze = new char [rows * ( 2 * cols) + 1];
+	grid = new Cell* [rows];
+	neighbors = new Cell* [4];
+	stack = new Cell* [rows * cols];
+	stringMaze = new char [rows * ( 2 * cols) + 1];
 
 
-   for(int i = 0; i < rows; ++i)
-   {
-      grid[i] = new Cell [cols];
+	for(int i = 0; i < rows; ++i)
+	{
+		grid[i] = new Cell [cols];
 
-      for(int j = 0; j < cols; ++j)
-      {
-         grid[i][j].setCell(i, j);
-      }
-   }
+		for(int j = 0; j < cols; ++j)
+		{
+			grid[i][j].setCell(i, j);
+		}
+	}
 
-   srand(time(NULL));
-   }
+	srand(time(NULL));
+}
 
 Maze::~Maze()
 {
@@ -126,8 +140,8 @@ void Maze::path()
 		}
 
 		//Exibi a criação do labirinto passo a passo
-		//system("cls");
-		//this->show();
+		clearScreen();
+		this->show();
 
 	 } while(!stack[0]->fixed);
 
@@ -187,6 +201,8 @@ Cell* Maze::checkNeighbors(Cell& actualCell)
 
 void Maze::waySolve()
 {
+	bool findFinal = false;
+
 	for(int i = 0; i < rows; ++i)
 	{
 		for(int j = 0; j < cols; ++j)
@@ -213,19 +229,22 @@ void Maze::waySolve()
 
 				if(next->caracter == 'S')
 				{
-					std::cout << "SAIDA ENCONTRADA!" << std::endl;
-					return;
+					findFinal = true;
+					//break;
 				}
+				else
+				{
 
-				next->caracter = '+';
+					next->caracter = '+';
 
-				//Adiciona a célula atual a pilha de visitados
-				stack[push] = current;
+					//Adiciona a célula atual a pilha de visitados
+					stack[push] = current;
 
-				//Torna a proxima célula a atual
-				current = next;
+					//Torna a proxima célula a atual
+					current = next;
 
-				++push;
+					++push;
+				}
 
 			}
 
@@ -244,14 +263,16 @@ void Maze::waySolve()
 		}
 
 		//Exibe a criação do trajeto passo a passo
-		//system("cls");
-		//this->show();
+		clearScreen();
+		this->show();
 
 
-	} while(!stack[0]->fixed);
+	} while(!stack[0]->fixed && !findFinal);
 
+	//system("cls");
 
-	if(push < 0) { std::cout << "SAIDA NAO ENCONTRADA!" << std::endl; }
+	if(findFinal) { std::cout << "\aSAIDA ENCONTRADA!" << std::endl; }
+	else { std::cout << "\aSAIDA NAO ENCONTRADA!" << std::endl; }
 
 
 	return;
@@ -350,7 +371,7 @@ void Maze::show()
 	stringMaze[k] = '\0';
 	//std::cout << std::endl;
 
-	std::cout << stringMaze;
+	std::cout << stringMaze << std::endl;
 
 	return;
 }
@@ -386,3 +407,4 @@ void Maze::doors(const int port)
 
 	} while(true);
 }
+

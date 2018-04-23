@@ -7,11 +7,12 @@ void start(const int line, const int column)
 {
 	Maze maze(line, column);
 	maze.path();
-	maze.show();
+	//maze.show();
 	maze.waySolve();
-	maze.show();
+	//maze.show();
 	//maze.~Maze();
 }
+
 
 int main() {
 
@@ -35,7 +36,10 @@ int main() {
 				std::cin >> line;
 				std::cin >> column;
 
+				system("cls");
+
 				start(line, column);
+
 				break;
 			case 'E':
 				break;
